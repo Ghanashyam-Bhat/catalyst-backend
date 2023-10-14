@@ -79,4 +79,4 @@ def generate_certificate(event_name, student_name, path):
     # Move the buffer position to the beginning of the PDF
     pdf_buffer.seek(0)
 
-    return pdf_buffersave()
+    return pdf_buffer
