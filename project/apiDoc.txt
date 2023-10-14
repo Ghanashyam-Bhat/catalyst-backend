@@ -1,0 +1,354 @@
+Projects Handling 
+
+Working Flow - 
+1. Students have option to enter the New Project Details (A form) Or Enter Project ID of created project(If they enter project ID, they will be associated with that existing project)
+2. Content of the form is as below
+	Title
+	Description
+	GitHub Link / Conference Paper Link
+	// Technology and concepts used (Tags) -> Let's ignore this for now
+	Radio button (Selecting if the project is associated with college or not)
+	Category (Capstone / Subject Project / Research Internship in college / Hackathon )
+	department (Only for capstone)
+	Adding Faculty ID (If project is associated with the college) - Guide / Subject Teacher || Adding event ID (If hacakthon)
+	Completion Status (In progress / Completed)
+	Approval (If capstone and hackathon projects 2 level approval required, For other projects 1 level approval) - Project not associated college can be directed to any faculty 
+3. Once students post new project, it will be visible to to everyone (Approval - Pending, Completion Status - Pending) - Default
+4. Completion status will be updated by the Level - 1 Faculty. 
+5. Approval will be done by Leval - 1 Faculty 
+6. If capstone, After Level - 1 faculty approves, It will go to Level - 2 faculty (say department Head)
+7. For hacakthon projects, Appoval and completion will be by clubs and then Level -2 approval will be by club incharge
+8. On clicking on project one can view all the details of the projects and students involved in the project.
+8. Project section will have list of all the projects. This section will be available for all type of users. 
+9. Filters such as below should be made available for students - 
+	Only completed projects
+	My projects
+	Only Approved projects
+	Only Pending projects
+10. Filters such as below should be made available for faculty - 
+	Projects under me
+	Only completed projects
+	Only Approved projects
+	Only Pending projects
+	Pending approval projects
+11. Users should be able to apply multiple filters
+
+
+Backend API document - 
+
+Add new project - Student
+--------------------------------------------------------
+Route: project/add/
+--------------------------------------------------------
+Request:
+{
+cookies:
+title:
+details:
+withCollege:True
+link: <link_to_project> or <link_to_paper>
+category:"subject"
+guide: <faculty_id>
+}
+
+OR ---
+
+{
+cookies:
+title:
+details:
+withCollege:True
+link: <link_to_project> or <link_to_paper>
+category:"capstone"
+guide: <faculty_id>
+department: <department_id>
+}
+
+OR ---
+
+{
+cookies:
+title:
+details:
+withCollege:True
+link: <link_to_project> or <link_to_paper>
+category:"hackathon"
+hackathon: <event_id>
+}
+
+OR ---
+
+{
+cookies:
+title:
+details:
+withCollege:False
+link: <link_to_project> or <link_to_paper>
+guide: <faculty_id>
+}
+--------------------------------------------------------
+Response:
+
+{
+message : "SUCCESS" / "FAILURE"
+}
+
+status = 200/500/401
+--------------------------------------------------------------------------------------------------------------
+Add new student to existing project - Student
+--------------------------------------------------------
+Route: project/student/
+--------------------------------------------------------
+Request:
+{
+cookies :
+project : <project_id>
+}
+--------------------------------------------------------
+Response:
+{
+message : "SUCCESS" / "FAILURE"
+}
+
+status = 200/404/401
+--------------------------------------------------------------------------------------------------------------
+Get list of all projects - All users
+--------------------------------------------------------
+Route : project/list/
+--------------------------------------------------------
+Request:
+{
+cookies :
+}
+--------------------------------------------------------
+Response:
+{
+    "message" :"SUCCESS" / "FAILURE"
+    "projects" : [
+                {
+                id:<project_id>
+                title:
+                details:
+                withCollege:
+                link:
+                category:
+                guide:<faculty_id> OR None
+                hackathon:<event_id> OR None
+		department:<department_id> OR None
+                completion:0-2
+                approval:0-2
+                students:[ 
+                        {
+                                    name:
+                                    srn:
+                                },
+                        {
+                                    name:
+                                    srn:
+                                },
+                .................
+                    ]
+                },
+
+                {
+                id:<project_id>
+                title:
+                details:
+                withCollege:
+                link:
+                category:
+                guide:<faculty_id> OR None
+                hackathon:<event_id> OR None
+		department:<department_id> OR None
+                completion:0-2
+                approval:0-2
+                students:[ 
+                        {
+                                    name:
+                                    srn:
+                                },
+                        {
+                                    name:
+                                    srn:
+                                },
+                .................
+                    ]
+                },
+                {
+                id:<project_id>
+                title:
+                details:
+                withCollege:
+                link:
+                category:
+                guide:<faculty_id> OR None
+                hackathon:<event_id> OR None
+		department:<department_id> OR None
+                completion:0-2
+                approval:0-2
+                students:[ 
+                        {
+                                    name:
+                                    srn:
+                                },
+                        {
+                                    name:
+                                    srn:
+                                },
+                .................
+                    ]
+                }
+                ..............
+        ]
+}
+status = 200/404/401
+--------------------------------------------------------------------------------------------------------------
+Get Details of one particular project - All users
+--------------------------------------------------------
+Route : project/details/
+--------------------------------------------------------
+Request:
+{
+cookies :
+project : <project_id>
+}
+--------------------------------------------------------
+Response:
+{
+    "message" : "SUCCESS" / "FAILURE"
+    "details" : {
+        id:<project_id>
+        title:
+        details:
+        withCollege:
+        link:
+        category:
+        guide:<faculty_id> OR None
+        hackathon:<event_id> OR None
+	department:<department_id> OR None
+        completion:0-2
+        approval:0-2
+        students:[ 
+                {
+                            name:
+                            srn:
+                        },
+                {
+                            name:
+                            srn:
+                        },
+        .................
+            ]
+        }
+}
+status = 200/404/401
+--------------------------------------------------------------------------------------------------------------
+Get list of all projects for approval under - club or faculty
+--------------------------------------------------------
+Route : project/approval/list/
+--------------------------------------------------------
+Request: 
+{
+cookies:
+}
+--------------------------------------------------------
+Response:
+{
+    "message" :"SUCCESS" / "FAILURE"
+    "projects" : [
+                {
+                id:<project_id>
+                title:
+                details:
+                withCollege:
+                link:
+                category:
+                guide:<faculty_id> OR None
+                hackathon:<event_id> OR None
+		department:<department_id> OR None
+                completion:0-2
+                approval:0-2
+                students:[ 
+                        {
+                                    name:
+                                    srn:
+                                },
+                        {
+                                    name:
+                                    srn:
+                                },
+                .................
+                    ]
+                },
+
+                {
+                id:<project_id>
+                title:
+                details:
+                withCollege:
+                link:
+                category:
+                guide:<faculty_id> OR None
+                hackathon:<event_id> OR None
+		department:<department_id> OR None
+                completion:0-2
+                approval:0-2
+                students:[ 
+                        {
+                                    name:
+                                    srn:
+                                },
+                        {
+                                    name:
+                                    srn:
+                                },
+                .................
+                    ]
+                },
+                {
+                id:<project_id>
+                title:
+                details:
+                withCollege:
+                link:
+                category:
+                guide:<faculty_id> OR None
+                hackathon:<event_id> OR None
+		department:<department_id> OR None
+                completion:0-2
+                approval:0-2
+                students:[ 
+                        {
+                                    name:
+                                    srn:
+                                },
+                        {
+                                    name:
+                                    srn:
+                                },
+                .................
+                    ]
+                }
+                ..............
+        ]
+}
+status = 200/404/401
+--------------------------------------------------------------------------------------------------------------
+Approve a project - Club OR Faculty
+--------------------------------------------------------
+Route: project/approval/
+--------------------------------------------------------
+Request:
+{
+cookies:
+id:<project_id>
+approval:True/False
+completion:True/False/None
+}
+--------------------------------------------------------
+Response:
+{
+message:"SUCCESS"/"FAILURE"
+}
+status:200/500/401
+--------------------------------------------------------------------------------------------------------------
