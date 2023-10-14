@@ -16,10 +16,8 @@ class participant(models.Model):
     id = models.AutoField(primary_key=True)
     srn = models.ForeignKey(student,on_delete=models.CASCADE)
     event = models.ForeignKey(event,on_delete=models.CASCADE,related_name='participants')
+    position = models.IntegerField(default=0)
     
-class winner(models.Model):
-    id = models.OneToOneField(participant,primary_key=True,on_delete=models.CASCADE)
-    position = models.IntegerField(null=False)
     
 class report(models.Model):
     id = models.AutoField(primary_key=True)
