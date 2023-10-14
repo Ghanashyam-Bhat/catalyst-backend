@@ -377,15 +377,7 @@ def downloadCertificate(request):
         student_name = student.objects.get(srn=message["id"]).name
         # Generate the PDF certificate
         path = configFile["DJANGO"]+f"/events/certificate/verify?eventid={eventid_str}&srn={srn}"
-        generate_certificate(event_name, student_name,path)
-        with open("static/temp/certificate.pdf", 'rb') as file:
-            file_data = file.read()
-
-        # Create a BytesIO buffer and write the file data to it
-        buffer = io.BytesIO()
-        buffer.write(file_data)
-        buffer.seek(0)  
-
+        buffer = generate_certificate(event_name, student_name,path)
         # Create a FileResponse with the buffer as the file content
         response = FileResponse(buffer, as_attachment=True, filename=f'{event_name}_{student_name}.pdf')
         print("certificate sent")
