@@ -4,11 +4,14 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Spacer, Image
 from reportlab.pdfgen import canvas
 import qrcode
+from io import BytesIO
 
+def generate_certificate(event_name, student_name, path):
+    # Create a BytesIO buffer to store the PDF
+    pdf_buffer = BytesIO()
 
-def generate_certificate(event_name, student_name,path):
     # Create the PDF document
-    pdf = canvas.Canvas("static/temp/certificate.pdf", pagesize=letter)
+    pdf = canvas.Canvas(pdf_buffer, pagesize=letter)
 
     # Add background color
     pdf.setFillColorRGB(1, 1, 1)  # White
@@ -42,15 +45,25 @@ def generate_certificate(event_name, student_name,path):
         box_size=10,
         border=4,
     )
-    
+
     qr.add_data(path)
     qr.make(fit=True)
     qr_image = qr.make_image(fill_color="black", back_color="white")
-    qr_filename = "static/temp/qr_code.png"
-    qr_image.save(qr_filename)
+
+    # Create a BytesIO buffer for the QR code image
+    qr_buffer = BytesIO()
+    qr_image.save(qr_buffer, format='PNG')
+
+    # Move the buffer position to the beginning of the buffer
+    qr_buffer.seek(0)
 
     # Add the QR code image to the certificate
-    pdf.drawInlineImage(qr_filename, 450, 55, width=1.5*inch, height=1.5*inch)
+    pdf.drawInlineImage(qr_buffer, 450, 55, width=1.5 * inch, height=1.5 * inch)
 
-    # Save and close the PDF
+    # Save the PDF content to the buffer
     pdf.save()
+
+    # Move the buffer position to the beginning of the PDF
+    pdf_buffer.seek(0)
+
+    return pdf_buffer
