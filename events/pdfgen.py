@@ -5,6 +5,9 @@ from reportlab.platypus import SimpleDocTemplate, Spacer, Image
 from reportlab.pdfgen import canvas
 import qrcode
 from io import BytesIO
+from PIL import Image as PILImage
+import tempfile
+import os
 
 def generate_certificate(event_name, student_name, path):
     # Create a BytesIO buffer to store the PDF
@@ -52,13 +55,23 @@ def generate_certificate(event_name, student_name, path):
 
     # Create a BytesIO buffer for the QR code image
     qr_buffer = BytesIO()
-    qr_image.save(qr_buffer, format='PNG')
-
-    # Move the buffer position to the beginning of the buffer
+    qr_image.save(qr_buffer, format='PNG')  # Set the format explicitly to PNG
     qr_buffer.seek(0)
 
-    # Add the QR code image to the certificate
-    pdf.drawInlineImage(qr_buffer, 450, 55, width=1.5 * inch, height=1.5 * inch)
+    # Convert the QR code to a PIL image
+    qr_pil_image = PILImage.open(qr_buffer)
+
+    # Create a temporary PNG file to save the QR code
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_qr_file:
+        temp_qr_file_path = temp_qr_file.name
+        qr_pil_image.save(temp_qr_file_path, format='PNG')
+
+    # Add the QR code image from the temporary file to the PDF
+    pdf.drawImage(temp_qr_file_path, 450, 55, width=1.5 * inch, height=1.5 * inch)
+
+    # Close and remove the temporary file
+    temp_qr_file.close()
+    os.remove(temp_qr_file_path)
 
     # Save the PDF content to the buffer
     pdf.save()
@@ -66,4 +79,4 @@ def generate_certificate(event_name, student_name, path):
     # Move the buffer position to the beginning of the PDF
     pdf_buffer.seek(0)
 
-    return pdf_buffer
+    return pdf_buffersave()
