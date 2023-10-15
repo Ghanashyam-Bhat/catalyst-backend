@@ -21,7 +21,7 @@ class student(models.Model):
     sem = models.IntegerField()
     cgpa = models.FloatField()
     department = models.ForeignKey(department,on_delete=models.CASCADE)
-    crypto = models.IntegerField(validators=[MinValueValidator(0)],default=0)
+    crypto = models.FloatField(validators=[MinValueValidator(0)],default=0)
 
     
 class club(models.Model):

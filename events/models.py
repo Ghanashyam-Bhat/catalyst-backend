@@ -16,8 +16,7 @@ class participant(models.Model):
     id = models.AutoField(primary_key=True)
     srn = models.ForeignKey(student,on_delete=models.CASCADE)
     event = models.ForeignKey(event,on_delete=models.CASCADE,related_name='participants')
-    position = models.IntegerField(default=0)
-    
+    position = models.IntegerField(default=0)    
     
 class report(models.Model):
     id = models.AutoField(primary_key=True)

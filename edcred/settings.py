@@ -75,13 +75,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     "django_extensions",
+    'storages',
     #User defined apps    
     'events.apps.EventsConfig',
     'home.apps.HomeConfig',
     'project.apps.ProjectConfig',
     'attendance.apps.AttendanceConfig',
     'blockchain.apps.BlockchainConfig',
-    
 ]
 
 MIDDLEWARE = [
