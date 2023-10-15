@@ -129,7 +129,29 @@ def addReport(request):
             message['message'] = "FAILURE"
             status = 401
         return JsonResponse(message,status=status)
-    
+
+def getLeaderBoard(request):
+    req_body = request.body.decode('utf-8')
+    message,status = auth(req_body=req_body)
+    req = json.loads(req_body)
+    print(message,req)
+    try:
+        students = student.objects.all().order_by('-crypto')
+        studentsList = []
+        rank = 0
+        for eachStudent in students:
+            rank += 1
+            studentsList.append({
+                "name":eachStudent.name,
+                "srn":eachStudent.srn,
+                "rank":rank
+            })
+        message["leaderboard"] = studentsList
+    except:
+        message['message'] = "FAILURE"
+        status = 401
+    return JsonResponse(message,status=status)
+
 def addParticipant(request):
     req_body = request.POST.get('request')
     try:
@@ -147,8 +169,13 @@ def addParticipant(request):
                 new = models.participant(
                     srn = srn,
                     event = eventId,
+                    position = int(req["pos"])
                 )
                 new.save()
+                srn.crypto = srn.crypto + 1/(new.position)
+                print(srn.crypto)
+                srn.save()
+
             except Exception as e:
                 print("ERROR:",e)
                 message['message'] = "FAILURE"

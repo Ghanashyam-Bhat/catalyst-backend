@@ -15,5 +15,6 @@ urlpatterns = [
     path('approvals/get/',views.eventApprovals),
     path('approval/',views.signEvent),
     path('certificate/',views.downloadCertificate),
+    path('leaderboard/',views.getLeaderBoard),
     re_path(r'^certificate/verify/$',views.verifyEvent)
 ]
